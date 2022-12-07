@@ -27,23 +27,23 @@ conn = psycopg2.connect(user=username, password=password, dbname=database, host=
 with conn:
     cur = conn.cursor()
     cur.execute(query_1)
-    country = []
+    player = []
     count = []
 
     for row in cur:
-        country.append(row[0])
+        player.append(row[0])
         count.append(row[1])
 
-    x_range = range(len(country))
+    x_range = range(len(player))
 
     figure, (bar_ax, pie_ax, graph_ax) = plt.subplots(1, 3)
 
     bar_ax.bar(x_range, count, label='Total')
-    bar_ax.set_title('к-сть часу(хвилин) на полі кожного гравця')
+    bar_ax.set_title('к-сть часу на полі кожного гравця')
     bar_ax.set_xlabel('Player')
     bar_ax.set_ylabel('Count')
     bar_ax.set_xticks(x_range)
-    bar_ax.set_xticklabels(country,  rotation=15)
+    bar_ax.set_xticklabels(player,  rotation=15)
 
     cur.execute(query_2)
     players = []
@@ -57,24 +57,21 @@ with conn:
     pie_ax.set_title('к-сть гравців по командам')
 
     cur.execute(query_3)
-    player = []
-    score = []
+    raptor_box_total = []
+    minutes_played = []
 
     for row in cur:
-        player.append(row[0])
-        score.append(row[1])
+        raptor_box_total.append(row[0])
+        minutes_played.append(row[1])
 
-    graph_ax.plot(player, score, marker='o')
-    graph_ax.set_xticks(player)
-    graph_ax.set_xticklabels(player, rotation=20)
+    graph_ax.plot(raptor_box_total, minutes_played, marker='o')
+    graph_ax.set_xticks(raptor_box_total)
+    graph_ax.set_xticklabels(raptor_box_total, rotation=20)
     graph_ax.set_xlabel('raptor_box_total')
     graph_ax.set_ylabel(' minutes_played')
-    graph_ax.set_title('залежність набраних балів на полі від часу на полі')
-
-    for i, j in zip(player, score):
-        graph_ax.annotate(j, xy=(i, j), xytext=(7, 2), textcoords='offset points')
-
+    graph_ax.set_title('залежність набраних балів від часу')
+    
 mng = plt.get_current_fig_manager()
-mng.resize(3300, 1500)
+mng.resize(300, 100)
 
 plt.show()
